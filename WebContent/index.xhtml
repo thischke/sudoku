@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+</h:head>
+<h:body>
+
+	<h1>
+		<h:outputText value="#{board.title}" />
+	</h1>
+
+	<h:form id="form">
+
+		<c:forEach items="#{board.fields}" var="row" varStatus="loop_x">
+			<c:forEach items="#{row}" var="field" varStatus="loop_y">
+
+				<p:commandButton id="field_#{loop_x.index}_#{loop_y.index}"
+					value="#{field.valueAsString}" type="button" />
+				<p:overlayPanel id="set_field_#{loop_x.index}_#{loop_y.index}"
+					for="field_#{loop_x.index}_#{loop_y.index}" dynamic="true"
+					hideEffect="fade" widgetVar="ovl_#{loop_x.index}_#{loop_y.index}">
+
+					<c:forEach items="#{field.possibilities}" var="possibility"
+						varStatus="loop_p">
+						<p:commandButton value="#{possibility}"
+							actionListener="#{board.updateField}"
+							update="field_#{loop_x.index}_#{loop_y.index}"
+							partialSubmit="true"
+							oncomplete="ovl_#{loop_x.index}_#{loop_y.index}.hide();">
+							<f:param name="x" value="#{loop_x.index}" />
+							<f:param name="y" value="#{loop_y.index}" />
+							<f:param name="wert" value="#{possibility}" />
+						</p:commandButton>
+					</c:forEach>
+				</p:overlayPanel>
+
+			</c:forEach>
+			<br />
+		</c:forEach>
+
+	</h:form>
+
+</h:body>
+</html>

@@ -8,6 +8,6 @@
 
 	<context:component-scan base-package="de.thischke.sudoku.strategy" />
 
-	<bean id="allStrategies" class="de.thischke.sudoku.runner.starter"></bean>
+	<bean id="allStrategies" class="de.thischke.sudoku.beans.BoardBean"></bean>
 	
 </beans>

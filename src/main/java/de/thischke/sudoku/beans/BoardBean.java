@@ -12,6 +12,8 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import de.thischke.sudoku.model.Board;
 import de.thischke.sudoku.model.Field;
 import de.thischke.sudoku.strategy.ClearPossibilites;
@@ -27,6 +29,8 @@ public class BoardBean implements Serializable {
 	private String title;
 	private Board board;
 	private List<ArrayList<Field>> fields;
+	
+	private static List<Strategy> strategies;
 
 	@PostConstruct
 	public void init() {
@@ -41,6 +45,11 @@ public class BoardBean implements Serializable {
 			}
 			this.fields.add(columns);
 		}
+	}
+	
+	@Autowired
+	public void setStrategies(List<Strategy> strategies) {
+		BoardBean.strategies = strategies;
 	}
 
 	public List<ArrayList<Field>> getFields() {
@@ -66,5 +75,9 @@ public class BoardBean implements Serializable {
 	public void resolve(ActionEvent actionEvent) {
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.addMessage(null, new FacesMessage("", "resolve board"));
+		
+		for(Strategy strategy: strategies) {
+			context.addMessage(null, new FacesMessage("", "found strategy: " + strategy.getName()));
+		}
 	}
 }

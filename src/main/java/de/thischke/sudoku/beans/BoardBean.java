@@ -12,6 +12,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 
+import org.primefaces.context.RequestContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import de.thischke.sudoku.model.Board;
@@ -36,7 +37,7 @@ public class BoardBean implements Serializable {
 	public void init() {
 		this.board = new Board();
 		this.title = "Sudoku";
-
+		
 		fields = new ArrayList<ArrayList<Field>>();
 		for (int y = 0; y < 9; y++) {
 			ArrayList<Field> columns = new ArrayList<Field>();
@@ -76,8 +77,32 @@ public class BoardBean implements Serializable {
 		FacesContext context = FacesContext.getCurrentInstance();
 		context.addMessage(null, new FacesMessage("", "resolve board"));
 		
-		for(Strategy strategy: strategies) {
-			context.addMessage(null, new FacesMessage("", "found strategy: " + strategy.getName()));
+//		for(Strategy strategy: strategies) {
+//			context.addMessage(null, new FacesMessage("", "found strategy: " + strategy.getName()));
+//		}
+		
+		Boolean found = Boolean.TRUE;
+		while (found) {
+			found = Boolean.FALSE;
+			
+			for(Strategy strategy: strategies) {
+				if(strategy.resolver(board)) {
+					found = Boolean.TRUE;
+				}
+			}
+		}
+		
+		displayBoard();
+		
+		context.addMessage(null, new FacesMessage("", "found strategy ... ended " ));
+	}
+
+	private void displayBoard() {
+		RequestContext currentInstance = RequestContext.getCurrentInstance();
+		for (int x=0; x<9; x++) {
+			for (int y=0; y<9; y++) {
+				currentInstance.update("form:field_" + x + "_" + y);
+			}
 		}
 	}
 }
